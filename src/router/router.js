@@ -69,7 +69,7 @@ router.get("/protected", isAuthenticated ,(req,res)=>{
 })
 
 router.get('/auth/callback/failure' , (req , res) => {
-    res.send("Error");
+    res.sendit("Error");
 })
   
 
