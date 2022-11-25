@@ -3,7 +3,7 @@ const router=express.Router()
 const userController = require("../controler/userControler")
 const bookController=require('../controler/BOOKcontroler')
 const likes=require("../controler/linkscontroler")
-
+const passportAuth2=("passportAuth2")
 // const bookController = require("../controler/")
 const {authentication,authorization}=require("../middleWare/auth")
 
@@ -11,7 +11,7 @@ const {authentication,authorization}=require("../middleWare/auth")
 //
 const passport = require('passport');
 const session = require('express-session')
-require('./auth/strategies/googleLoginStrategy');
+require('../auth/stratagies/googlelogin');
   
 router.use(session({
     secret: "secret",
@@ -54,12 +54,21 @@ router.get("/auth/callback", passport.authenticate( 'google', {
   failureRedirect: 'api/auth/callback/failure'
 }))
 
+const isAuthenticated = (req, res,next) =>{
 
-app.get("/protected", isAuthenticated ,(req,res)=>{
+  try{ console.log(req.isAuthenticated())
+   if(req.isAuthenticated()) { return next() }
+   else res.redirect('/api')
+}catch(err){
+   res.status(500).json({message:err.message})
+}
+}
+
+router.get("/protected", isAuthenticated ,(req,res)=>{
     res.send("PROTECTED")
 })
 
-app.get('/auth/callback/failure' , (req , res) => {
+router.get('/auth/callback/failure' , (req , res) => {
     res.send("Error");
 })
   
